@@ -1,6 +1,7 @@
 package com.glennsyj.jpaplayground.manager;
 
 import com.glennsyj.jpaplayground.entity.Member;
+import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,8 @@ import jakarta.persistence.PersistenceContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -20,12 +23,32 @@ public class MemberEntityManagerTest {
     private EntityManager entityManager;
 
     @Test
+    public void testEntityManagerIsSession() {
+        // Null check needed
+        assertThat(entityManager).isNotNull();
+
+        // Assuming entityManager is properly initialized
+        assertThat(entityManager).isInstanceOf(Session.class);
+
+        // Cast to Session
+        Session session = (Session) entityManager;
+    }
+
+    @Test
     public void testCreateAndFindMember() {
         // Create a Member
         Member member = Member.builder()
                 .username("test")
                 .email("test@example.com")
                 .build();
+
+        if (entityManager instanceof Session) {
+            Session session = (Session) entityManager;
+            System.out.println("EntityManager is a Hibernate Session.");
+            System.out.println("Session class: " + session.getClass().getName());
+        } else {
+            System.out.println("EntityManager is not a Hibernate Session.");
+        }
 
         // Persist the entity
         entityManager.persist(member);
