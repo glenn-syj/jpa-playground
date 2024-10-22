@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -28,5 +29,24 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
+
+    public void deleteAllMember() {
+        memberRepository.deleteAll();
+    }
+
+    public Member getMemberByUsername(String username) {
+        return memberRepository.findByUsername(username).orElse(null);
+    }
+
+    public Member getMemberByNameWithDefaultsEagerly(String username) {
+        return memberRepository.findByUsername(username)
+            .orElse(memberRepository.save(Member.builder().username(username).email(username+"@jpa.playground").build()));
+    }
+
+    public Member getMemberByNameWithDefaultsLazily(String username) {
+        return memberRepository.findByUsername(username).orElseGet(
+            () -> memberRepository.save(Member.builder().username(username).email(username+"@jpa.playground").build()));
+    }
+
 }
 
