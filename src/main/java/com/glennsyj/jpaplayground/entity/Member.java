@@ -41,4 +41,12 @@ public class Member {
         this.username = username;
         this.email = email;
     }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
 }
