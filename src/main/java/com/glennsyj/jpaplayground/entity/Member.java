@@ -28,6 +28,9 @@ public class Member {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Version
+    private Integer version;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
