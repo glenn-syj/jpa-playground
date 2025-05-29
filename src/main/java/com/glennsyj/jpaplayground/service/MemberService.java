@@ -1,7 +1,10 @@
 package com.glennsyj.jpaplayground.service;
 
 import com.glennsyj.jpaplayground.entity.Member;
+import com.glennsyj.jpaplayground.entity.TsidMember;
 import com.glennsyj.jpaplayground.repository.MemberRepository;
+import com.glennsyj.jpaplayground.repository.TsidMemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +14,13 @@ import java.util.Optional;
 @Service
 public class MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final TsidMemberRepository tsidMemberRepository;
+
+    public MemberService(MemberRepository memberRepository, TsidMemberRepository tsidMemberRepository) {
+        this.memberRepository = memberRepository;
+        this.tsidMemberRepository = tsidMemberRepository;
+    }
 
     public Member createMember(Member member) {
         return memberRepository.save(member);
@@ -20,6 +28,11 @@ public class MemberService {
 
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
+    }
+
+    public TsidMember getTsidMemberFrom(Long id) {
+        return tsidMemberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No TsidMember form the id based on tsid"));
     }
 
     public Member getMemberById(Long id) {
