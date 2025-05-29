@@ -30,7 +30,6 @@ async function createMember() {
 
 async function getMember() {
   const tsid = document.getElementById("tsidInput").value.trim();
-  const type = document.getElementById("typeSelect").value;
 
   if (!tsid) {
     showResult("Please enter a TSID");
@@ -38,7 +37,7 @@ async function getMember() {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/tsid/${tsid}?type=${type}`);
+    const response = await fetch(`${API_BASE_URL}/tsid/${tsid}`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
