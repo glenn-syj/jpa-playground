@@ -1,6 +1,7 @@
 package com.glennsyj.jpaplayground.model;
 
 public record TsidMemberCreateDto(
-        String name
+        String name,
+        String type
 ) {
 }
