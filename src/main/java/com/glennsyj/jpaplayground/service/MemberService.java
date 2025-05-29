@@ -35,6 +35,11 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("No TsidMember form the id based on tsid"));
     }
 
+    public TsidMember createTsidMember(String name) {
+        return tsidMemberRepository.save(TsidMember.builder()
+                .name(name).build());
+    }
+
     public Member getMemberById(Long id) {
         return memberRepository.findById(id).orElse(null);
     }
