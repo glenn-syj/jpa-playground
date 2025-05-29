@@ -7,6 +7,7 @@ import com.glennsyj.jpaplayground.repository.TsidMemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("No TsidMember form the id based on tsid"));
     }
 
+    @Transactional
     public TsidMember createTsidMember(String name) {
         return tsidMemberRepository.save(TsidMember.builder()
                 .name(name).build());
