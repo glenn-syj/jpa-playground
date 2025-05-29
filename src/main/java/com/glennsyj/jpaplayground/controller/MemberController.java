@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/v1/members")
+@CrossOrigin(origins = "*")
 public class MemberController {
 
     private final MemberService memberService;
@@ -24,17 +25,12 @@ public class MemberController {
     }
 
     @GetMapping("/tsid/{tsid}")
-    public ResponseEntity<?> getTsidMember(@PathVariable Long tsid,
-                                                        @RequestParam(required = false
-                                                                , defaultValue = "STRING") String type) {
+    public ResponseEntity<?> getTsidMember(@PathVariable Long tsid) {
         try {
+            log.info("PathVariable tsid: {}", tsid);
             TsidMember tsidMember = memberService.getTsidMemberFrom(tsid);
 
-            Object dto = switch (type.toUpperCase()) {
-                case "STRING" -> new TsidMemberStringDto(tsidMember.getId().toString(), tsidMember.getName());
-                case "LONG" -> new TsidMemberLongDto(tsidMember.getId(), tsidMember.getName());
-                default -> throw new IllegalArgumentException("Invalid type: " + type);
-            };
+            TsidMemberLongDto dto = new TsidMemberLongDto(tsidMember.getId(), tsidMember.getName());
 
             return ResponseEntity.ok(dto);
         } catch (EntityNotFoundException e) {
@@ -49,7 +45,14 @@ public class MemberController {
         try {
             TsidMember tsidMember = memberService.createTsidMember(dto.name());
             log.info("TsidMember id: {} and name: {}", tsidMember.getId(), tsidMember.getName());
-            return ResponseEntity.ok(dto);
+
+            Object responseDto = switch (dto.type().toUpperCase()) {
+                case "LONG" -> new TsidMemberLongDto(tsidMember.getId(), tsidMember.getName());
+                case "STRING" -> new TsidMemberStringDto(tsidMember.getId().toString(), tsidMember.getName());
+                default -> throw new IllegalArgumentException("Wrong TsidMemberCreationDto Type");
+            };
+
+            return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
